@@ -101,15 +101,17 @@
             <i class="bi bi-boxes"></i> Spareparts
         </a>
 
-        <div class="nav-label">Operations</div>
-        <a href="{{ route('transactions.index') }}"
-           class="nav-link-item {{ request()->routeIs('transactions.*') ? 'active' : '' }}">
-            <i class="bi bi-arrow-left-right"></i> Transactions
-        </a>
-        <a href="{{ route('maintenance.index') }}"
-           class="nav-link-item {{ request()->routeIs('maintenance.*') ? 'active' : '' }}">
-            <i class="bi bi-tools"></i> Maintenance
-        </a>
+        @if(auth()->check() && in_array(auth()->user()->role, ['technician', 'admin']))
+            <div class="nav-label">Operations</div>
+            <a href="{{ route('transactions.index') }}"
+               class="nav-link-item {{ request()->routeIs('transactions.*') ? 'active' : '' }}">
+                <i class="bi bi-arrow-left-right"></i> Transactions
+            </a>
+            <a href="{{ route('maintenance.index') }}"
+               class="nav-link-item {{ request()->routeIs('maintenance.*') ? 'active' : '' }}">
+                <i class="bi bi-tools"></i> Maintenance
+            </a>
+        @endif
     </div>
 </nav>
 
@@ -123,7 +125,30 @@
                 </ol>
             </nav>
         </div>
-        <span class="text-muted small">{{ now()->format('l, d F Y') }}</span>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-muted small">{{ now()->format('l, d F Y') }}</span>
+            
+            @auth
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-1"></i>{{ auth()->user()->name }}
+                        <span class="badge bg-primary ms-2 text-uppercase">{{ auth()->user()->role }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item-text small text-muted">{{ auth()->user()->email }}</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                                @csrf
+                                <button type="submit" class="dropdown-item" onclick="return confirm('Logout?')">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            @endauth
+        </div>
     </div>
 
     <div class="page-content">

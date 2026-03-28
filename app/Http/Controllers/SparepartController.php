@@ -55,6 +55,12 @@ class SparepartController extends Controller
             ->with('success', 'Sparepart added successfully.');
     }
 
+    public function show(Sparepart $sparepart)
+    {
+        $transactions = $sparepart->transactions()->latest()->paginate(10);
+        return view('spareparts.show', compact('sparepart', 'transactions'));
+    }
+
     public function edit(Sparepart $sparepart)
     {
         return view('spareparts.edit', compact('sparepart'));

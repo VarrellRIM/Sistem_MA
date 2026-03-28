@@ -4,15 +4,45 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // ── Users ────────────────────────────────────────────────
+        // Default test users with different roles
+        DB::table('users')->insert([
+            [
+                'name' => 'Admin User',
+                'email' => 'admin@test.local',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Technician User',
+                'email' => 'technician@test.local',
+                'password' => Hash::make('password'),
+                'role' => 'technician',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Viewer User',
+                'email' => 'viewer@test.local',
+                'password' => Hash::make('password'),
+                'role' => 'viewer',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
         // ── Devices ──────────────────────────────────────────────
+        // Note: IT-00001 intentionally removed to allow fresh practice
         $devices = [
-            ['asset_code' => 'IT-00001', 'device_type' => 'pc',     'brand' => 'Dell',   'model' => 'OptiPlex 3080',      'serial_number' => 'SN-DELL-001', 'processor' => 'Intel Core i5-10400',  'ram_size' => 16, 'storage_size' => 512,  'storage_type' => 'ssd',  'os' => 'Windows 11 Pro',   'status' => 'active',      'location' => 'IT Office',    'assigned_to' => 'John Smith'],
             ['asset_code' => 'IT-00002', 'device_type' => 'laptop',  'brand' => 'HP',     'model' => 'EliteBook 840 G8',   'serial_number' => 'SN-HP-002',   'processor' => 'Intel Core i7-1165G7', 'ram_size' => 16, 'storage_size' => 512,  'storage_type' => 'nvme', 'os' => 'Windows 11 Pro',   'status' => 'in_use',      'location' => 'Marketing',    'assigned_to' => 'Sarah Connor'],
             ['asset_code' => 'IT-00003', 'device_type' => 'server',  'brand' => 'Dell',   'model' => 'PowerEdge R740',     'serial_number' => 'SN-DELL-003', 'processor' => 'Intel Xeon Silver 4210','ram_size' => 64,'storage_size' => 2000, 'storage_type' => 'ssd',  'os' => 'Ubuntu 22.04 LTS', 'status' => 'active',      'location' => 'Server Room',  'assigned_to' => null],
             ['asset_code' => 'IT-00004', 'device_type' => 'pc',     'brand' => 'Lenovo', 'model' => 'ThinkCentre M90q',   'serial_number' => 'SN-LEN-004',  'processor' => 'Intel Core i5-10500',  'ram_size' => 8,  'storage_size' => 256,  'storage_type' => 'ssd',  'os' => 'Windows 10 Pro',   'status' => 'maintenance', 'location' => 'HR Dept',      'assigned_to' => 'Mike Johnson'],
@@ -30,8 +60,8 @@ class DatabaseSeeder extends Seeder
         }
 
         // ── Spareparts ────────────────────────────────────────────
+        // Note: SPR-00001 intentionally removed to allow fresh practice
         $spareparts = [
-            ['part_code' => 'SPR-00001', 'part_category' => 'ram',      'part_name' => 'RAM DDR4 8GB',       'brand' => 'Kingston', 'specification' => '8GB DDR4 3200MHz',     'stock' => 10, 'min_stock' => 5,  'unit_price' => 550000,  'supplier' => 'TechSupplies Co.',  'location' => 'Shelf A-1'],
             ['part_code' => 'SPR-00002', 'part_category' => 'ssd',      'part_name' => 'SSD SATA 256GB',     'brand' => 'WD',       'specification' => '256GB SATA 2.5"',      'stock' => 6,  'min_stock' => 3,  'unit_price' => 720000,  'supplier' => 'PC Store',          'location' => 'Shelf A-2'],
             ['part_code' => 'SPR-00003', 'part_category' => 'hdd',      'part_name' => 'HDD 1TB',            'brand' => 'Seagate',  'specification' => '1TB 7200RPM SATA',     'stock' => 2,  'min_stock' => 3,  'unit_price' => 880000,  'supplier' => 'TechSupplies Co.',  'location' => 'Shelf A-3'],
             ['part_code' => 'SPR-00004', 'part_category' => 'keyboard', 'part_name' => 'USB Keyboard',       'brand' => 'Logitech', 'specification' => 'Wired USB Full Size',  'stock' => 8,  'min_stock' => 5,  'unit_price' => 250000,  'supplier' => 'iBox',              'location' => 'Shelf B-1'],
@@ -49,12 +79,11 @@ class DatabaseSeeder extends Seeder
         $deviceIds    = DB::table('devices')->pluck('id')->toArray();
         $sparepartIds = DB::table('spareparts')->pluck('id')->toArray();
 
+        // Only using device IT-00002 (index 0) onwards since IT-00001 was removed
         $transactions = [
-            ['transaction_code' => 'TRX-20260301-0001', 'part_id' => $sparepartIds[0], 'device_id' => null,          'transaction_type' => 'in',  'quantity' => 15, 'purpose' => null,                   'requester' => 'TechSupplies Co.',  'technician' => 'Eric G.',     'transaction_date' => '2026-03-01'],
-            ['transaction_code' => 'TRX-20260310-0001', 'part_id' => $sparepartIds[0], 'device_id' => $deviceIds[0], 'transaction_type' => 'out', 'quantity' => 2,  'purpose' => 'RAM upgrade for PC',   'requester' => 'John Smith',        'technician' => 'Eric G.',     'transaction_date' => '2026-03-10'],
-            ['transaction_code' => 'TRX-20260310-0002', 'part_id' => $sparepartIds[1], 'device_id' => $deviceIds[3], 'transaction_type' => 'out', 'quantity' => 1,  'purpose' => 'SSD replacement',      'requester' => 'Mike Johnson',      'technician' => 'Eric G.',     'transaction_date' => '2026-03-10'],
-            ['transaction_code' => 'TRX-20260315-0001', 'part_id' => $sparepartIds[3], 'device_id' => null,          'transaction_type' => 'in',  'quantity' => 10, 'purpose' => null,                   'requester' => 'iBox',              'technician' => 'Eric G.',     'transaction_date' => '2026-03-15'],
-            ['transaction_code' => 'TRX-20260320-0001', 'part_id' => $sparepartIds[4], 'device_id' => $deviceIds[1], 'transaction_type' => 'out', 'quantity' => 1,  'purpose' => 'Replace broken mouse', 'requester' => 'Sarah Connor',      'technician' => 'Eric G.',     'transaction_date' => '2026-03-20'],
+            ['transaction_code' => 'TRX-20260310-0002', 'part_id' => $sparepartIds[0], 'device_id' => $deviceIds[0], 'transaction_type' => 'out', 'quantity' => 1,  'purpose' => 'SSD replacement',      'requester' => 'Sarah Connor',      'technician' => 'Eric G.',     'transaction_date' => '2026-03-10'],
+            ['transaction_code' => 'TRX-20260315-0001', 'part_id' => $sparepartIds[2], 'device_id' => null,          'transaction_type' => 'in',  'quantity' => 10, 'purpose' => null,                   'requester' => 'iBox',              'technician' => 'Eric G.',     'transaction_date' => '2026-03-15'],
+            ['transaction_code' => 'TRX-20260320-0001', 'part_id' => $sparepartIds[3], 'device_id' => $deviceIds[1], 'transaction_type' => 'out', 'quantity' => 1,  'purpose' => 'Replace broken mouse', 'requester' => 'CEO',               'technician' => 'Eric G.',     'transaction_date' => '2026-03-20'],
         ];
 
         foreach ($transactions as $trx) {
@@ -62,12 +91,11 @@ class DatabaseSeeder extends Seeder
         }
 
         // ── Maintenance Logs ──────────────────────────────────────
+        // Only using device IT-00002 (index 0) onwards since IT-00001 was removed
         $maintenanceLogs = [
-            ['device_id' => $deviceIds[0], 'maintenance_date' => '2026-01-15', 'maintenance_type' => 'preventive', 'description' => 'Dust cleaning and component inspection',  'sparepart_id' => null,            'cost' => 0,        'technician' => 'Eric Green',  'next_maintenance' => '2026-04-15'],
             ['device_id' => $deviceIds[1], 'maintenance_date' => '2026-02-10', 'maintenance_type' => 'corrective',  'description' => 'Laptop battery replacement',              'sparepart_id' => null,            'cost' => 1360000,  'technician' => 'Eric Green',  'next_maintenance' => '2026-08-10'],
-            ['device_id' => $deviceIds[3], 'maintenance_date' => '2026-03-10', 'maintenance_type' => 'upgrade',     'description' => 'SSD 256GB upgrade',                       'sparepart_id' => $sparepartIds[1],'cost' => 900000,  'technician' => 'Eric Green',  'next_maintenance' => '2026-09-10'],
             ['device_id' => $deviceIds[2], 'maintenance_date' => '2025-12-01', 'maintenance_type' => 'preventive', 'description' => 'Server inspection and firmware update',    'sparepart_id' => null,            'cost' => 0,        'technician' => 'IT Admin',    'next_maintenance' => Carbon::now()->addDays(5)->format('Y-m-d')],
-            ['device_id' => $deviceIds[4], 'maintenance_date' => '2025-11-20', 'maintenance_type' => 'preventive', 'description' => 'Cleaning and OS update',                  'sparepart_id' => null,            'cost' => 0,        'technician' => 'IT Admin',    'next_maintenance' => Carbon::now()->addDays(2)->format('Y-m-d')],
+            ['device_id' => $deviceIds[3], 'maintenance_date' => '2025-11-20', 'maintenance_type' => 'preventive', 'description' => 'Cleaning and OS update',                  'sparepart_id' => null,            'cost' => 0,        'technician' => 'IT Admin',    'next_maintenance' => Carbon::now()->addDays(2)->format('Y-m-d')],
         ];
 
         foreach ($maintenanceLogs as $log) {

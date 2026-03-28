@@ -62,6 +62,7 @@
                     <td><small>{{ $sp->unit_price > 0 ? 'Rp ' . number_format($sp->unit_price, 0, ',', '.') : '-' }}</small></td>
                     <td><small>{{ $sp->supplier ?? '-' }}</small></td>
                     <td class="text-center">
+                        <a href="{{ route('spareparts.show', $sp) }}" class="btn btn-sm btn-outline-info" title="View"><i class="bi bi-eye"></i></a>
                         <a href="{{ route('spareparts.edit', $sp) }}" class="btn btn-sm btn-outline-warning" title="Edit"><i class="bi bi-pencil"></i></a>
                         <form method="POST" action="{{ route('spareparts.destroy', $sp) }}" class="d-inline"
                               onsubmit="return confirm('Delete sparepart {{ $sp->part_name }}?')">

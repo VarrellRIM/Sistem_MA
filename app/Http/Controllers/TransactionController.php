@@ -52,7 +52,12 @@ class TransactionController extends Controller
         ]);
 
         DB::transaction(function () use ($validated) {
-            Sparepart::findOrFail($validated['part_id'])->increment('stock', $validated['quantity']);
+            // Use pessimistic locking to prevent race conditions
+            $sparepart = Sparepart::lockForUpdate()->findOrFail($validated['part_id']);
+            $oldStock = $sparepart->stock;
+            
+            $sparepart->increment('stock', $validated['quantity']);
+            
             Transaction::create([
                 ...$validated,
                 'transaction_type' => 'in',
@@ -87,14 +92,21 @@ class TransactionController extends Controller
 
         try {
             DB::transaction(function () use ($validated) {
+                // Use pessimistic locking to prevent concurrent modifications
                 $sparepart = Sparepart::lockForUpdate()->findOrFail($validated['part_id']);
 
+                // Validate sufficient stock after lock acquired
                 if ($sparepart->stock < $validated['quantity']) {
-                    throw new \Exception("Insufficient stock. Current stock: {$sparepart->stock}");
+                    throw new \Exception(
+                        "Insufficient stock. Required: {$validated['quantity']}, " .
+                        "Available: {$sparepart->stock}"
+                    );
                 }
 
+                $oldStock = $sparepart->stock;
                 $sparepart->decrement('stock', $validated['quantity']);
 
+                // Record transaction
                 Transaction::create([
                     ...$validated,
                     'transaction_type' => 'out',
