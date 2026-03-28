@@ -11,7 +11,7 @@ class Transaction extends Model
     protected $fillable = [
         'transaction_code', 'part_id', 'device_id', 'transaction_type',
         'quantity', 'purpose', 'requester', 'technician',
-        'transaction_date', 'notes',
+        'transaction_date', 'notes', 'created_at',
     ];
 
     protected $casts = [

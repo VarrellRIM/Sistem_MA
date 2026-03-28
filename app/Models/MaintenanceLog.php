@@ -10,13 +10,14 @@ class MaintenanceLog extends Model
 
     protected $fillable = [
         'device_id', 'maintenance_date', 'maintenance_type',
-        'description', 'sparepart_id', 'cost', 'technician', 'next_maintenance',
+        'description', 'sparepart_id', 'cost', 'technician',
+        'next_maintenance', 'created_at',
     ];
 
     protected $casts = [
-        'maintenance_date'  => 'date',
-        'next_maintenance'  => 'date',
-        'created_at'        => 'datetime',
+        'maintenance_date' => 'date',
+        'next_maintenance' => 'date',
+        'created_at'       => 'datetime',
     ];
 
     public function device()

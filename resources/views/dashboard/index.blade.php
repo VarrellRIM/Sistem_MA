@@ -1,196 +1,138 @@
 @extends('layouts.app')
-
 @section('title', 'Dashboard')
-
 @section('breadcrumb')
     <li class="breadcrumb-item active">Dashboard</li>
 @endsection
 
 @section('content')
-
-{{-- Stat Cards --}}
+{{-- Stats --}}
 <div class="row g-3 mb-4">
-    {{-- Total Perangkat --}}
     <div class="col-6 col-md-3">
-        <div class="stat-card bg-white shadow-sm">
-            <div class="stat-icon bg-indigo-100" style="background:#e0e7ff">
-                <i class="bi bi-pc-display text-primary"></i>
-            </div>
-            <div>
-                <div class="stat-value text-primary">{{ $deviceStats['total'] }}</div>
-                <div class="stat-label">Total Perangkat</div>
-            </div>
+        <div class="stat-card text-white" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">
+            <div class="stat-num">{{ $totalDevices }}</div>
+            <div class="stat-lbl"><i class="bi bi-pc-display me-1"></i>Total Devices</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card bg-white shadow-sm">
-            <div class="stat-icon" style="background:#dcfce7">
-                <i class="bi bi-check-circle" style="color:#16a34a"></i>
-            </div>
-            <div>
-                <div class="stat-value" style="color:#16a34a">{{ $deviceStats['active'] }}</div>
-                <div class="stat-label">Active</div>
-            </div>
+        <div class="stat-card text-white" style="background:linear-gradient(135deg,#10b981,#059669)">
+            <div class="stat-num">{{ $activeDevices }}</div>
+            <div class="stat-lbl"><i class="bi bi-check-circle me-1"></i>Active</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card bg-white shadow-sm">
-            <div class="stat-icon" style="background:#fef9c3">
-                <i class="bi bi-wrench" style="color:#ca8a04"></i>
-            </div>
-            <div>
-                <div class="stat-value" style="color:#ca8a04">{{ $deviceStats['maintenance'] }}</div>
-                <div class="stat-label">Maintenance</div>
-            </div>
+        <div class="stat-card text-white" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+            <div class="stat-num">{{ $maintDevices }}</div>
+            <div class="stat-lbl"><i class="bi bi-tools me-1"></i>Under Maintenance</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card bg-white shadow-sm">
-            <div class="stat-icon" style="background:#dbeafe">
-                <i class="bi bi-boxes" style="color:#2563eb"></i>
-            </div>
-            <div>
-                <div class="stat-value" style="color:#2563eb">{{ $totalSpareparts }}</div>
-                <div class="stat-label">Jenis Sparepart</div>
-            </div>
+        <div class="stat-card text-white" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">
+            <div class="stat-num">{{ \App\Models\Sparepart::count() }}</div>
+            <div class="stat-lbl"><i class="bi bi-boxes me-1"></i>Sparepart Types</div>
         </div>
     </div>
 </div>
 
 <div class="row g-3">
-
     {{-- Upcoming Maintenance --}}
-    <div class="col-12 col-lg-6">
-        <div class="card table-card shadow-sm h-100">
-            <div class="card-header d-flex align-items-center gap-2">
-                <i class="bi bi-calendar-event text-warning"></i>
-                Maintenance dalam 7 Hari ke Depan
-                @if($upcomingMaintenance->count())
-                    <span class="badge bg-warning text-dark ms-auto">{{ $upcomingMaintenance->count() }}</span>
-                @endif
-            </div>
-            <div class="card-body p-0">
-                @if($upcomingMaintenance->isEmpty())
-                    <div class="text-center text-muted py-4">
-                        <i class="bi bi-check-circle fs-3 d-block mb-2"></i>
-                        Tidak ada jadwal maintenance mendatang
-                    </div>
-                @else
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead><tr>
-                                <th>Perangkat</th><th>Tgl Maintenance</th><th>Teknisi</th>
-                            </tr></thead>
-                            <tbody>
-                            @foreach($upcomingMaintenance as $log)
-                                <tr>
-                                    <td>
-                                        <a href="{{ route('maintenance.byDevice', $log->device) }}" class="text-decoration-none fw-medium">
-                                            {{ $log->device->asset_code }}
-                                        </a>
-                                        <small class="d-block text-muted">{{ $log->device->brand }} {{ $log->device->model }}</small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-warning text-dark">
-                                            {{ $log->next_maintenance->format('d/m/Y') }}
-                                        </span>
-                                    </td>
-                                    <td><small>{{ $log->technician }}</small></td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    {{-- Low Stock Alert --}}
-    <div class="col-12 col-lg-6">
-        <div class="card table-card shadow-sm h-100">
-            <div class="card-header d-flex align-items-center gap-2">
-                <i class="bi bi-exclamation-triangle text-danger"></i>
-                Sparepart Stok Rendah
-                @if($lowStockItems->count())
-                    <span class="badge bg-danger ms-auto">{{ $lowStockItems->count() }}</span>
-                @endif
-            </div>
-            <div class="card-body p-0">
-                @if($lowStockItems->isEmpty())
-                    <div class="text-center text-muted py-4">
-                        <i class="bi bi-shield-check fs-3 d-block mb-2"></i>
-                        Semua stok aman
-                    </div>
-                @else
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead><tr><th>Sparepart</th><th>Stok</th><th>Min</th></tr></thead>
-                            <tbody>
-                            @foreach($lowStockItems as $sp)
-                                <tr class="low-stock-row">
-                                    <td>
-                                        <span class="fw-medium">{{ $sp->part_name }}</span>
-                                        <small class="d-block text-muted">{{ $sp->part_code }}</small>
-                                    </td>
-                                    <td><span class="badge bg-danger">{{ $sp->stock }}</span></td>
-                                    <td><span class="text-muted">{{ $sp->min_stock }}</span></td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    {{-- 5 perangkat maintenance terlama --}}
-    <div class="col-12">
-        <div class="card table-card shadow-sm">
-            <div class="card-header d-flex align-items-center gap-2">
-                <i class="bi bi-clock-history"></i>
-                5 Perangkat dengan Maintenance Terlama
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <i class="bi bi-calendar-event text-warning me-2"></i>Upcoming Maintenance (Next 7 Days)
             </div>
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead><tr>
-                        <th>Asset Code</th><th>Perangkat</th><th>Status</th>
-                        <th>Lokasi</th><th>Maintenance Terakhir</th><th>Aksi</th>
-                    </tr></thead>
+                <table class="table mb-0">
+                    <thead><tr><th>Device</th><th>Date</th><th>Technician</th></tr></thead>
                     <tbody>
-                    @foreach($oldestMaintained as $device)
+                    @forelse($upcomingMaintenance as $log)
                         <tr>
-                            <td><span class="badge bg-secondary">{{ $device->asset_code }}</span></td>
                             <td>
-                                <span class="fw-medium">{{ $device->brand }} {{ $device->model }}</span>
-                                <small class="d-block text-muted text-capitalize">{{ $device->device_type }}</small>
+                                <a href="{{ route('maintenance.byDevice', $log->device) }}" class="text-decoration-none fw-medium">
+                                    {{ $log->device->asset_code }}
+                                </a>
+                                <small class="d-block text-muted">{{ $log->device->brand }} {{ $log->device->model }}</small>
                             </td>
                             <td>
-                                <span class="badge badge-status-{{ $device->status }}">
-                                    {{ ucfirst(str_replace('_',' ',$device->status)) }}
+                                <span class="badge {{ $log->next_maintenance->isToday() || $log->next_maintenance->isPast() ? 'bg-danger' : 'bg-warning text-dark' }}">
+                                    {{ $log->next_maintenance->format('d M Y') }}
                                 </span>
                             </td>
-                            <td>{{ $device->location ?? '-' }}</td>
-                            <td>
-                                @if($device->latestMaintenance)
-                                    {{ $device->latestMaintenance->maintenance_date->format('d/m/Y') }}
-                                @else
-                                    <span class="text-danger">Belum pernah</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('maintenance.byDevice', $device) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-list-ul"></i>
-                                </a>
-                            </td>
+                            <td><small>{{ $log->technician }}</small></td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr><td colspan="3" class="text-center text-muted py-3">No upcoming maintenance.</td></tr>
+                    @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    {{-- Low Stock --}}
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <i class="bi bi-exclamation-triangle text-danger me-2"></i>Low Stock Alert
+            </div>
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead><tr><th>Part</th><th>Category</th><th>Stock</th><th>Min</th></tr></thead>
+                    <tbody>
+                    @forelse($lowStockItems as $sp)
+                        <tr>
+                            <td>
+                                <span class="fw-medium">{{ $sp->part_name }}</span>
+                                <small class="d-block text-muted">{{ $sp->part_code }}</small>
+                            </td>
+                            <td><span class="badge bg-light text-dark text-uppercase">{{ $sp->part_category }}</span></td>
+                            <td><span class="badge bg-danger">{{ $sp->stock }}</span></td>
+                            <td><small>{{ $sp->min_stock }}</small></td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="4" class="text-center text-muted py-3">All spareparts are sufficiently stocked.</td></tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+            @if($lowStockItems->isNotEmpty())
+                <div class="card-footer text-end bg-transparent">
+                    <a href="{{ route('spareparts.index') }}" class="btn btn-sm btn-outline-danger">View All Spareparts</a>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- Longest Since Maintenance --}}
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <i class="bi bi-clock-history text-secondary me-2"></i>Devices — Longest Since Last Maintenance
+            </div>
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead><tr><th>Asset Code</th><th>Brand / Model</th><th>Location</th><th>Assigned To</th><th>Last Maintenance</th></tr></thead>
+                    <tbody>
+                    @forelse($oldestMaintained as $device)
+                        <tr>
+                            <td><span class="badge bg-secondary">{{ $device->asset_code }}</span></td>
+                            <td>{{ $device->brand }} {{ $device->model }}</td>
+                            <td><small>{{ $device->location ?? '-' }}</small></td>
+                            <td><small>{{ $device->assigned_to ?? '-' }}</small></td>
+                            <td>
+                                @if($device->latestMaintenance)
+                                    {{ $device->latestMaintenance->maintenance_date->diffForHumans() }}
+                                @else
+                                    <span class="badge bg-danger">Never maintained</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="5" class="text-center text-muted py-3">No devices found.</td></tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

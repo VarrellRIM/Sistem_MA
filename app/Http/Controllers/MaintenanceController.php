@@ -11,17 +11,16 @@ class MaintenanceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = MaintenanceLog::with(['device', 'sparepart']);
+        $query = MaintenanceLog::with(['device', 'sparepart'])->orderByDesc('maintenance_date');
 
         if ($request->filled('device_id')) {
             $query->where('device_id', $request->device_id);
         }
-
         if ($request->filled('type')) {
             $query->where('maintenance_type', $request->type);
         }
 
-        $logs    = $query->orderBy('maintenance_date', 'desc')->paginate(20)->withQueryString();
+        $logs    = $query->paginate(15)->withQueryString();
         $devices = Device::orderBy('asset_code')->get();
 
         return view('maintenance.index', compact('logs', 'devices'));
@@ -29,9 +28,9 @@ class MaintenanceController extends Controller
 
     public function create(Request $request)
     {
-        $devices    = Device::orderBy('asset_code')->get();
-        $spareparts = Sparepart::orderBy('part_name')->get();
-        $selectedDevice = $request->device_id ? Device::find($request->device_id) : null;
+        $devices        = Device::orderBy('asset_code')->get();
+        $spareparts     = Sparepart::orderBy('part_name')->get();
+        $selectedDevice = $request->filled('device_id') ? Device::find($request->device_id) : null;
 
         return view('maintenance.create', compact('devices', 'spareparts', 'selectedDevice'));
     }
@@ -49,23 +48,18 @@ class MaintenanceController extends Controller
             'next_maintenance' => 'nullable|date|after:maintenance_date',
         ]);
 
-        MaintenanceLog::create($validated);
+        MaintenanceLog::create(array_merge($validated, ['created_at' => now()]));
 
-        return redirect()->route('maintenance.index')->with('success', 'Log maintenance berhasil disimpan.');
-    }
-
-    public function show(MaintenanceLog $maintenance)
-    {
-        $maintenance->load(['device', 'sparepart']);
-        return view('maintenance.show', compact('maintenance'));
+        return redirect()->route('maintenance.index')
+            ->with('success', 'Maintenance log saved successfully.');
     }
 
     public function byDevice(Device $device)
     {
         $logs = MaintenanceLog::with('sparepart')
             ->where('device_id', $device->id)
-            ->orderBy('maintenance_date', 'desc')
-            ->paginate(20);
+            ->orderByDesc('maintenance_date')
+            ->paginate(15);
 
         return view('maintenance.by-device', compact('device', 'logs'));
     }

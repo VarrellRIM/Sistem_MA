@@ -1,47 +1,46 @@
 @extends('layouts.app')
-@section('title', 'History Transaksi')
+@section('title', 'Transaction History')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item active">Transaksi</li>
+    <li class="breadcrumb-item active">Transactions</li>
 @endsection
 
 @section('content')
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h5 class="fw-bold mb-0"><i class="bi bi-arrow-left-right me-2"></i>History Transaksi</h5>
+    <h5 class="fw-bold mb-0"><i class="bi bi-arrow-left-right me-2"></i>Transaction History</h5>
     <div class="d-flex gap-2">
         <a href="{{ route('transactions.createIn') }}" class="btn btn-success btn-sm">
-            <i class="bi bi-arrow-down-circle me-1"></i>Sparepart Masuk
+            <i class="bi bi-arrow-down-circle me-1"></i>Stock In
         </a>
         <a href="{{ route('transactions.createOut') }}" class="btn btn-danger btn-sm">
-            <i class="bi bi-arrow-up-circle me-1"></i>Sparepart Keluar
+            <i class="bi bi-arrow-up-circle me-1"></i>Stock Out
         </a>
     </div>
 </div>
 
-{{-- Filter --}}
 <div class="card shadow-sm mb-3">
     <div class="card-body py-2">
         <form method="GET" class="row g-2 align-items-end">
             <div class="col-6 col-md-2">
                 <select name="type" class="form-select form-select-sm">
-                    <option value="">Semua Tipe</option>
-                    <option value="in" @selected(request('type')=='in')>Masuk (In)</option>
-                    <option value="out" @selected(request('type')=='out')>Keluar (Out)</option>
+                    <option value="">All Types</option>
+                    <option value="in"  @selected(request('type')=='in')>Stock In</option>
+                    <option value="out" @selected(request('type')=='out')>Stock Out</option>
                 </select>
             </div>
             <div class="col-6 col-md-3">
                 <select name="part_id" class="form-select form-select-sm">
-                    <option value="">Semua Sparepart</option>
+                    <option value="">All Spareparts</option>
                     @foreach($spareparts as $sp)
                         <option value="{{ $sp->id }}" @selected(request('part_id')==$sp->id)>{{ $sp->part_name }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-6 col-md-2">
-                <input type="date" name="date_from" class="form-control form-control-sm" value="{{ request('date_from') }}" placeholder="Dari">
+                <input type="date" name="date_from" class="form-control form-control-sm" value="{{ request('date_from') }}">
             </div>
             <div class="col-6 col-md-2">
-                <input type="date" name="date_to" class="form-control form-control-sm" value="{{ request('date_to') }}" placeholder="Sampai">
+                <input type="date" name="date_to" class="form-control form-control-sm" value="{{ request('date_to') }}">
             </div>
             <div class="col-auto">
                 <button class="btn btn-sm btn-primary"><i class="bi bi-search"></i></button>
@@ -57,8 +56,8 @@
     <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead><tr>
-                <th>Kode</th><th>Tipe</th><th>Sparepart</th><th>Qty</th>
-                <th>Perangkat</th><th>Tujuan</th><th>Peminta</th><th>Teknisi</th><th>Tgl</th>
+                <th>Code</th><th>Type</th><th>Sparepart</th><th>Qty</th>
+                <th>Device</th><th>Purpose</th><th>Requested By</th><th>Technician</th><th>Date</th>
             </tr></thead>
             <tbody>
             @forelse($transactions as $trx)
@@ -66,9 +65,9 @@
                     <td><small class="text-muted">{{ $trx->transaction_code }}</small></td>
                     <td>
                         @if($trx->transaction_type == 'in')
-                            <span class="badge bg-success"><i class="bi bi-arrow-down"></i> Masuk</span>
+                            <span class="badge bg-success"><i class="bi bi-arrow-down"></i> In</span>
                         @else
-                            <span class="badge bg-danger"><i class="bi bi-arrow-up"></i> Keluar</span>
+                            <span class="badge bg-danger"><i class="bi bi-arrow-up"></i> Out</span>
                         @endif
                     </td>
                     <td>
@@ -83,7 +82,7 @@
                     <td><small>{{ $trx->transaction_date->format('d/m/Y') }}</small></td>
                 </tr>
             @empty
-                <tr><td colspan="9" class="text-center text-muted py-4">Tidak ada transaksi.</td></tr>
+                <tr><td colspan="9" class="text-center text-muted py-4">No transactions found.</td></tr>
             @endforelse
             </tbody>
         </table>

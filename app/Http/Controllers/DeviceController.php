@@ -15,18 +15,22 @@ class DeviceController extends Controller
             $query->where('device_type', $request->type);
         }
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
         if ($request->filled('search')) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
                 $q->where('asset_code', 'like', "%$s%")
-                  ->orWhere('serial_number', 'like', "%$s%")
-                  ->orWhere('assigned_to', 'like', "%$s%")
                   ->orWhere('brand', 'like', "%$s%")
-                  ->orWhere('model', 'like', "%$s%");
+                  ->orWhere('model', 'like', "%$s%")
+                  ->orWhere('serial_number', 'like', "%$s%")
+                  ->orWhere('assigned_to', 'like', "%$s%");
             });
         }
 
-        $devices = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+        $devices = $query->latest()->paginate(15)->withQueryString();
 
         return view('devices.index', compact('devices'));
     }
@@ -45,8 +49,8 @@ class DeviceController extends Controller
             'model'         => 'required|string|max:100',
             'serial_number' => 'required|string|max:100|unique:devices',
             'processor'     => 'nullable|string|max:100',
-            'ram_size'      => 'nullable|integer|min:0',
-            'storage_size'  => 'nullable|integer|min:0',
+            'ram_size'      => 'nullable|integer|min:1',
+            'storage_size'  => 'nullable|integer|min:1',
             'storage_type'  => 'nullable|in:ssd,hdd,nvme',
             'os'            => 'nullable|string|max:50',
             'purchase_date' => 'nullable|date',
@@ -59,12 +63,13 @@ class DeviceController extends Controller
 
         Device::create($validated);
 
-        return redirect()->route('devices.index')->with('success', 'Perangkat berhasil ditambahkan.');
+        return redirect()->route('devices.index')
+            ->with('success', 'Device added successfully.');
     }
 
     public function show(Device $device)
     {
-        $device->load(['maintenanceLogs' => fn($q) => $q->orderBy('maintenance_date', 'desc')]);
+        $device->load(['maintenanceLogs' => fn($q) => $q->orderByDesc('maintenance_date'), 'transactions']);
         return view('devices.show', compact('device'));
     }
 
@@ -82,8 +87,8 @@ class DeviceController extends Controller
             'model'         => 'required|string|max:100',
             'serial_number' => 'required|string|max:100|unique:devices,serial_number,' . $device->id,
             'processor'     => 'nullable|string|max:100',
-            'ram_size'      => 'nullable|integer|min:0',
-            'storage_size'  => 'nullable|integer|min:0',
+            'ram_size'      => 'nullable|integer|min:1',
+            'storage_size'  => 'nullable|integer|min:1',
             'storage_type'  => 'nullable|in:ssd,hdd,nvme',
             'os'            => 'nullable|string|max:50',
             'purchase_date' => 'nullable|date',
@@ -96,12 +101,14 @@ class DeviceController extends Controller
 
         $device->update($validated);
 
-        return redirect()->route('devices.index')->with('success', 'Perangkat berhasil diperbarui.');
+        return redirect()->route('devices.index')
+            ->with('success', 'Device updated successfully.');
     }
 
     public function destroy(Device $device)
     {
-        $device->delete(); // soft delete
-        return redirect()->route('devices.index')->with('success', 'Perangkat berhasil dihapus.');
+        $device->delete();
+        return redirect()->route('devices.index')
+            ->with('success', 'Device deleted successfully.');
     }
 }

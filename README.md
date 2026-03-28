@@ -76,11 +76,7 @@ Akses aplikasi di: **http://localhost:8000**
 | `maintenance_logs` | Riwayat perawatan perangkat         |
 
 ## Screenshot
-<img width="1918" height="936" alt="image" src="https://github.com/user-attachments/assets/79103663-f57d-4c51-9488-9c74de02f115" />
-<img width="1906" height="932" alt="image" src="https://github.com/user-attachments/assets/3b231682-eb07-42fa-9113-c35385e82d8b" />
-<img width="1911" height="928" alt="image" src="https://github.com/user-attachments/assets/f9e7afe6-4113-44a9-a6d6-aa9da0fd2603" />
-<img width="1911" height="931" alt="image" src="https://github.com/user-attachments/assets/3ca0a960-9ab5-4376-9514-3976385ea9aa" />
-<img width="1914" height="934" alt="image" src="https://github.com/user-attachments/assets/da90d55e-e8c0-4afe-9b31-bfe83e263daa" />
+
 
 
 ## Dump Database

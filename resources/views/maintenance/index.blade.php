@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Log Maintenance')
+@section('title', 'Maintenance Log')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item active">Maintenance</li>
@@ -7,19 +7,18 @@
 
 @section('content')
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h5 class="fw-bold mb-0"><i class="bi bi-tools me-2"></i>Log Maintenance</h5>
+    <h5 class="fw-bold mb-0"><i class="bi bi-tools me-2"></i>Maintenance Log</h5>
     <a href="{{ route('maintenance.create') }}" class="btn btn-primary btn-sm">
-        <i class="bi bi-plus-lg me-1"></i>Tambah Log
+        <i class="bi bi-plus-lg me-1"></i>Add Log
     </a>
 </div>
 
-{{-- Filter --}}
 <div class="card shadow-sm mb-3">
     <div class="card-body py-2">
         <form method="GET" class="row g-2 align-items-end">
             <div class="col-12 col-md-4">
                 <select name="device_id" class="form-select form-select-sm">
-                    <option value="">Semua Perangkat</option>
+                    <option value="">All Devices</option>
                     @foreach($devices as $dev)
                         <option value="{{ $dev->id }}" @selected(request('device_id')==$dev->id)>
                             [{{ $dev->asset_code }}] {{ $dev->brand }} {{ $dev->model }}
@@ -29,10 +28,10 @@
             </div>
             <div class="col-6 col-md-3">
                 <select name="type" class="form-select form-select-sm">
-                    <option value="">Semua Tipe</option>
+                    <option value="">All Types</option>
                     <option value="preventive" @selected(request('type')=='preventive')>Preventive</option>
-                    <option value="corrective" @selected(request('type')=='corrective')>Corrective</option>
-                    <option value="upgrade" @selected(request('type')=='upgrade')>Upgrade</option>
+                    <option value="corrective"  @selected(request('type')=='corrective')>Corrective</option>
+                    <option value="upgrade"     @selected(request('type')=='upgrade')>Upgrade</option>
                 </select>
             </div>
             <div class="col-auto">
@@ -49,8 +48,8 @@
     <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead><tr>
-                <th>Perangkat</th><th>Tgl Maintenance</th><th>Tipe</th><th>Deskripsi</th>
-                <th>Sparepart</th><th>Teknisi</th><th>Biaya</th><th>Next Maint.</th>
+                <th>Device</th><th>Date</th><th>Type</th><th>Description</th>
+                <th>Sparepart</th><th>Technician</th><th>Cost</th><th>Next Maintenance</th>
             </tr></thead>
             <tbody>
             @forelse($logs as $log)
@@ -63,8 +62,7 @@
                     </td>
                     <td>{{ $log->maintenance_date->format('d/m/Y') }}</td>
                     <td>
-                        <span class="badge
-                            {{ $log->maintenance_type == 'preventive' ? 'bg-info text-dark' : ($log->maintenance_type == 'corrective' ? 'bg-warning text-dark' : 'bg-success') }}">
+                        <span class="badge {{ $log->maintenance_type=='preventive' ? 'bg-info text-dark' : ($log->maintenance_type=='corrective' ? 'bg-warning text-dark' : 'bg-success') }}">
                             {{ ucfirst($log->maintenance_type) }}
                         </span>
                     </td>
@@ -77,13 +75,11 @@
                             <span class="badge {{ $log->next_maintenance->isPast() ? 'bg-danger' : 'bg-secondary' }}">
                                 {{ $log->next_maintenance->format('d/m/Y') }}
                             </span>
-                        @else
-                            <span class="text-muted">-</span>
-                        @endif
+                        @else <span class="text-muted">-</span> @endif
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="8" class="text-center text-muted py-4">Tidak ada log maintenance.</td></tr>
+                <tr><td colspan="8" class="text-center text-muted py-4">No maintenance logs found.</td></tr>
             @endforelse
             </tbody>
         </table>

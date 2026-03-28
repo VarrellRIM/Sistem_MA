@@ -24,7 +24,7 @@ class SparepartController extends Controller
             });
         }
 
-        $spareparts = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+        $spareparts = $query->orderBy('part_name')->paginate(15)->withQueryString();
 
         return view('spareparts.index', compact('spareparts'));
     }
@@ -51,12 +51,8 @@ class SparepartController extends Controller
 
         Sparepart::create($validated);
 
-        return redirect()->route('spareparts.index')->with('success', 'Sparepart berhasil ditambahkan.');
-    }
-
-    public function show(Sparepart $sparepart)
-    {
-        return view('spareparts.show', compact('sparepart'));
+        return redirect()->route('spareparts.index')
+            ->with('success', 'Sparepart added successfully.');
     }
 
     public function edit(Sparepart $sparepart)
@@ -81,12 +77,14 @@ class SparepartController extends Controller
 
         $sparepart->update($validated);
 
-        return redirect()->route('spareparts.index')->with('success', 'Sparepart berhasil diperbarui.');
+        return redirect()->route('spareparts.index')
+            ->with('success', 'Sparepart updated successfully.');
     }
 
     public function destroy(Sparepart $sparepart)
     {
         $sparepart->delete();
-        return redirect()->route('spareparts.index')->with('success', 'Sparepart berhasil dihapus.');
+        return redirect()->route('spareparts.index')
+            ->with('success', 'Sparepart deleted successfully.');
     }
 }

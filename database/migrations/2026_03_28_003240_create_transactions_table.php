@@ -9,10 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement()->primary(); // INT (PK, AI)
+            $table->integer('id')->autoIncrement()->primary();
             $table->string('transaction_code', 30)->unique();
-            $table->integer('part_id');              // INT (FK) sesuai spesifikasi
-            $table->integer('device_id')->nullable(); // INT (FK) opsional
+            $table->integer('part_id');
+            $table->integer('device_id')->nullable();
             $table->enum('transaction_type', ['in', 'out']);
             $table->integer('quantity');
             $table->string('purpose', 200)->nullable();
@@ -20,16 +20,10 @@ return new class extends Migration
             $table->string('technician', 100)->nullable();
             $table->date('transaction_date');
             $table->text('notes')->nullable();
-            $table->dateTime('created_at');                  // DATETIME sesuai spesifikasi
+            $table->dateTime('created_at');
 
-            // Foreign key constraints
-            $table->foreign('part_id')
-                  ->references('id')->on('spareparts')
-                  ->onDelete('restrict');
-
-            $table->foreign('device_id')
-                  ->references('id')->on('devices')
-                  ->onDelete('set null');
+            $table->foreign('part_id')->references('id')->on('spareparts')->onDelete('restrict');
+            $table->foreign('device_id')->references('id')->on('devices')->onDelete('set null');
         });
     }
 

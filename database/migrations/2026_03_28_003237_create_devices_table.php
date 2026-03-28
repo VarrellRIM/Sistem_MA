@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('devices', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement()->primary(); // INT (PK, AI)
+            $table->integer('id')->autoIncrement()->primary();
             $table->string('asset_code', 30)->unique();
             $table->enum('device_type', ['pc', 'laptop', 'server']);
             $table->string('brand', 50);
@@ -26,9 +26,9 @@ return new class extends Migration
             $table->string('location', 100)->nullable();
             $table->string('assigned_to', 100)->nullable();
             $table->text('notes')->nullable();
-            $table->softDeletes();                         // deleted_at untuk soft delete
-            $table->dateTime('created_at')->nullable();    // DATETIME sesuai spesifikasi
-            $table->dateTime('updated_at')->nullable();    // DATETIME sesuai spesifikasi
+            $table->softDeletes();
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('updated_at')->nullable();
         });
     }
 

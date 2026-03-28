@@ -35,9 +35,4 @@ class Device extends Model
     {
         return $this->hasOne(MaintenanceLog::class)->latestOfMany('maintenance_date');
     }
-
-    public function nextMaintenance()
-    {
-        return $this->hasOne(MaintenanceLog::class)->ofMany('next_maintenance', 'max');
-    }
 }
