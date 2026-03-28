@@ -76,6 +76,16 @@ Akses aplikasi di: **http://localhost:8000**
 | `maintenance_logs` | Riwayat perawatan perangkat         |
 
 ## Screenshot
+### Dashboard
+<img width="1910" height="931" alt="image" src="https://github.com/user-attachments/assets/dde5327d-64c4-4568-8c41-2e32497a6a4a" />
+### Devices
+<img width="1914" height="934" alt="image" src="https://github.com/user-attachments/assets/3a6f67be-6da2-4221-874d-e7bf7fdbdd8e" />
+### Spareparts
+<img width="1915" height="932" alt="image" src="https://github.com/user-attachments/assets/4ae70013-6da6-4180-a671-a70c3635e34e" />
+### Transactions
+<img width="1911" height="929" alt="image" src="https://github.com/user-attachments/assets/81ff23a6-3f60-4f63-90d9-59b4a06be365" />
+### Maintenance Log
+<img width="1911" height="931" alt="image" src="https://github.com/user-attachments/assets/c24aca6f-aa5a-450d-a5be-a785cae2e0c7" />
 
 
 
