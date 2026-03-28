@@ -2,6 +2,9 @@
 
 Aplikasi manajemen aset IT dan inventory sparepart untuk departemen IT **Global Putra International Group**.
 
+## Demo Website
+https://github.com/user-attachments/assets/f3b7e849-d718-48cb-88a3-f7f3abb1aedd
+
 ## Fitur
 
 - **Manajemen Perangkat** — CRUD PC, Laptop, Server dengan soft delete, filter, dan pencarian
@@ -137,9 +140,6 @@ Aplikasi menggunakan middleware berbasis role untuk mengontrol akses fitur:
 - **Pessimistic Locking** — Transaksi stok menggunakan `lockForUpdate()` untuk mencegah race condition
 
 ---
-
-## Demo Website
-https://github.com/user-attachments/assets/f3b7e849-d718-48cb-88a3-f7f3abb1aedd
 
 ## Screenshot
 
