@@ -116,7 +116,7 @@ Aplikasi menggunakan middleware berbasis role untuk mengontrol akses fitur:
 ### **Viewer** (Read-Only)
 - View semua data (perangkat, sparepart, transaksi, maintenance)
 - View dashboard
----
+
 
 ---
 
@@ -138,38 +138,28 @@ Aplikasi menggunakan middleware berbasis role untuk mengontrol akses fitur:
 
 ---
 
-## 📊 Screenshot
+## Demo Website
+https://github.com/user-attachments/assets/f3b7e849-d718-48cb-88a3-f7f3abb1aedd
+
+## Screenshot
 
 ### Dashboard
-<img width="1910" height="931" alt="image" src="https://github.com/user-attachments/assets/dde5327d-64c4-4568-8c41-2e32497a6a4a" />
+<img width="1911" height="934" alt="image" src="https://github.com/user-attachments/assets/5339d0cd-5d02-45a2-b42f-b09f3e2d5781" />
 
 ### Devices
-<img width="1914" height="934" alt="image" src="https://github.com/user-attachments/assets/3a6f67be-6da2-4221-874d-e7bf7fdbdd8e" />
+<img width="1909" height="935" alt="image" src="https://github.com/user-attachments/assets/e9275780-28ea-4333-9e1c-a6e3a2a6a8d5" />
 
 ### Spareparts
-<img width="1915" height="932" alt="image" src="https://github.com/user-attachments/assets/4ae70013-6da6-4180-a671-a70c3635e34e" />
+<img width="1907" height="936" alt="image" src="https://github.com/user-attachments/assets/ebe7e162-fc04-4000-8277-39ac2e09f71a" />
 
 ### Transactions
-<img width="1911" height="929" alt="image" src="https://github.com/user-attachments/assets/81ff23a6-3f60-4f63-90d9-59b4a06be365" />
+<img width="1911" height="936" alt="image" src="https://github.com/user-attachments/assets/c6ca1936-fbcb-4e3d-a15b-9b49e89f52aa" />
 
 ### Maintenance Log
-<img width="1911" height="931" alt="image" src="https://github.com/user-attachments/assets/c24aca6f-aa5a-450d-a5be-a785cae2e0c7" />
-
-
+<img width="1912" height="934" alt="image" src="https://github.com/user-attachments/assets/0135c5fc-498e-426b-847d-4ebfa0bfb58d" />
 
 ## Dump Database
 
 File dump SQL tersedia di: `database/sistem_ma.sql`
 
 ---
-
-## Informasi
-
-**Teknologi yang digunakan:**
-- Backend: Laravel 13 (PHP 8.3)
-- Database: MySQL
-- Frontend: Bootstrap 5 + Bootstrap Icons
-- Build tool: Vite
-
----
-
