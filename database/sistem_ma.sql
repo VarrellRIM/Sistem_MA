@@ -17,16 +17,6 @@
 /*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
--- Current Database: `sistem_ma`
---
-
-/*!40000 DROP DATABASE IF EXISTS `sistem_ma`*/;
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `sistem_ma` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-
-USE `sistem_ma`;
-
---
 -- Table structure for table `cache`
 --
 
@@ -112,7 +102,10 @@ CREATE TABLE `devices` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `devices_asset_code_unique` (`asset_code`),
-  UNIQUE KEY `devices_serial_number_unique` (`serial_number`)
+  UNIQUE KEY `devices_serial_number_unique` (`serial_number`),
+  KEY `devices_asset_code_index` (`asset_code`),
+  KEY `devices_status_index` (`status`),
+  KEY `devices_location_index` (`location`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -124,12 +117,12 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `devices` WRITE;
 /*!40000 ALTER TABLE `devices` DISABLE KEYS */;
 INSERT INTO `devices` VALUES
-(1,'IT-00001','pc','Dell','OptiPlex 3080','SN-DELL-001','Intel Core i5-10400',16,512,'ssd','Windows 11 Pro','2022-03-27','2027-03-27','active','Ruang IT','Budi Santoso',NULL,NULL,'2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(2,'IT-00002','laptop','HP','EliteBook 840 G8','SN-HP-002','Intel Core i7-1165G7',16,512,'nvme','Windows 11 Pro','2024-03-27','2028-03-27','in_use','Marketing','Siti Rahayu',NULL,NULL,'2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(3,'IT-00003','server','Dell','PowerEdge R740','SN-DELL-003','Intel Xeon Silver 4210',64,2000,'ssd','Ubuntu 22.04 LTS','2022-03-27','2027-03-27','active','Server Room',NULL,NULL,NULL,'2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(4,'IT-00004','pc','Lenovo','ThinkCentre M90q','SN-LEN-004','Intel Core i5-10500',8,256,'ssd','Windows 10 Pro','2025-03-27','2028-03-27','maintenance','HR Dept','Ahmad Fauzi',NULL,NULL,'2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(5,'IT-00005','laptop','Lenovo','ThinkPad X1 Carbon','SN-LEN-005','Intel Core i7-10510U',16,512,'nvme','Windows 11 Pro','2022-03-27','2028-03-27','active','Direksi','Direktur Utama',NULL,NULL,'2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(6,'IT-00006','pc','Asus','ExpertCenter D500','SN-ASUS-006','Intel Core i3-10100',4,500,'hdd','Windows 10 Home','2023-03-27','2027-03-27','retired','Gudang',NULL,NULL,NULL,'2026-03-27 23:38:22','2026-03-27 23:38:22');
+(1,'IT-00002','laptop','HP','EliteBook 840 G8','SN-HP-002','Intel Core i7-1165G7',16,512,'nvme','Windows 11 Pro','2024-03-28','2028-03-28','in_use','Marketing','Sarah Connor',NULL,NULL,'2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(2,'IT-00003','server','Dell','PowerEdge R740','SN-DELL-003','Intel Xeon Silver 4210',64,2000,'ssd','Ubuntu 22.04 LTS','2025-03-28','2028-03-28','active','Server Room',NULL,NULL,NULL,'2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(3,'IT-00004','pc','Lenovo','ThinkCentre M90q','SN-LEN-004','Intel Core i5-10500',8,256,'ssd','Windows 10 Pro','2025-03-28','2027-03-28','maintenance','HR Dept','Mike Johnson',NULL,NULL,'2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(4,'IT-00005','laptop','Lenovo','ThinkPad X1 Carbon','SN-LEN-005','Intel Core i7-10510U',16,512,'nvme','Windows 11 Pro','2024-03-28','2027-03-28','active','Executive','CEO',NULL,NULL,'2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(5,'IT-00006','pc','Asus','ExpertCenter D500','SN-ASUS-006','Intel Core i3-10100',4,500,'hdd','Windows 10 Home','2022-03-28','2028-03-28','retired','Storage',NULL,NULL,NULL,'2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(6,'IT-001','pc','Dell','Optiplex 3080','DELL-001-SN',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'active',NULL,NULL,NULL,NULL,'2026-03-28 06:50:02','2026-03-28 06:50:02');
 /*!40000 ALTER TABLE `devices` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -252,11 +245,12 @@ CREATE TABLE `maintenance_logs` (
   `next_maintenance` date DEFAULT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `maintenance_logs_device_id_foreign` (`device_id`),
   KEY `maintenance_logs_sparepart_id_foreign` (`sparepart_id`),
-  CONSTRAINT `maintenance_logs_device_id_foreign` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE,
+  KEY `maintenance_logs_device_id_index` (`device_id`),
+  KEY `maintenance_logs_maintenance_date_index` (`maintenance_date`),
+  CONSTRAINT `maintenance_logs_device_id_foreign` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`),
   CONSTRAINT `maintenance_logs_sparepart_id_foreign` FOREIGN KEY (`sparepart_id`) REFERENCES `spareparts` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -267,11 +261,10 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `maintenance_logs` WRITE;
 /*!40000 ALTER TABLE `maintenance_logs` DISABLE KEYS */;
 INSERT INTO `maintenance_logs` VALUES
-(1,1,'2026-01-15','preventive','Pembersihan debu, cek komponen',NULL,0.00,'Eko Prasetyo','2026-04-15','2026-03-27 23:38:22'),
-(2,2,'2026-02-10','corrective','Ganti baterai laptop',NULL,350000.00,'Eko Prasetyo','2026-08-10','2026-03-27 23:38:22'),
-(3,4,'2026-03-10','upgrade','Upgrade SSD 256GB',2,450000.00,'Eko Prasetyo','2026-09-10','2026-03-27 23:38:22'),
-(4,3,'2025-12-01','preventive','Cek server, update firmware',NULL,0.00,'Admin IT','2026-04-01','2026-03-27 23:38:22'),
-(5,5,'2025-11-20','preventive','Pembersihan dan update OS',NULL,0.00,'Admin IT','2026-03-29','2026-03-27 23:38:22');
+(1,4,'2026-02-10','corrective','Laptop battery replacement',NULL,1360000.00,'Eric Green','2026-08-10','2026-03-28 06:48:15'),
+(2,3,'2025-12-01','preventive','Server inspection and firmware update',NULL,0.00,'IT Admin','2026-04-02','2026-03-28 06:48:15'),
+(3,5,'2025-11-20','preventive','Cleaning and OS update',NULL,0.00,'IT Admin','2026-03-30','2026-03-28 06:48:15'),
+(4,6,'2026-03-28','upgrade','Upgrade RAM',NULL,0.00,'Muhammad Fajar',NULL,'2026-03-28 06:51:11');
 /*!40000 ALTER TABLE `maintenance_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -289,7 +282,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -303,10 +296,13 @@ INSERT INTO `migrations` VALUES
 (1,'0001_01_01_000000_create_users_table',1),
 (2,'0001_01_01_000001_create_cache_table',1),
 (3,'0001_01_01_000002_create_jobs_table',1),
-(4,'2026_03_27_100000_create_devices_table',1),
-(5,'2026_03_27_100001_create_spareparts_table',1),
-(6,'2026_03_27_100002_create_transactions_table',1),
-(7,'2026_03_27_100003_create_maintenance_logs_table',1);
+(4,'2026_03_28_003237_create_devices_table',1),
+(5,'2026_03_28_003239_create_spareparts_table',1),
+(6,'2026_03_28_003240_create_transactions_table',1),
+(7,'2026_03_28_003241_create_maintenance_logs_table',1),
+(8,'2026_03_28_110000_fix_maintenance_logs_foreign_key',1),
+(9,'2026_03_28_111000_add_indexes_to_tables',1),
+(10,'2026_03_28_120000_add_role_to_users_table',1);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -367,7 +363,7 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `sessions` WRITE;
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
 INSERT INTO `sessions` VALUES
-('X0mBsDC3JXKPDMNdAKbdXIhpZnHbvP3MQwcf2moF',NULL,'127.0.0.1','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36','eyJfdG9rZW4iOiJSTkl3WGhTbFNZeHRJeVhidVVCdEQyaGQ4UWpha1RRZzd3R3ZHeXk1IiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzEyNy4wLjAuMTo4MDAwXC9zcGFyZXBhcnRzIiwicm91dGUiOiJzcGFyZXBhcnRzLmluZGV4In0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfX0=',1774655372);
+('eBqZzGchg2duDUMWQqtSlQd8x4LtQteq6shfBfRc',1,'127.0.0.1','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36','eyJfdG9rZW4iOiJveXV5WkQyTlFIbGpJVGxJeXI1aHA0UEgzVHU3ZXFTVmdSeVJZWkRZIiwiX2ZsYXNoIjp7Im5ldyI6W10sIm9sZCI6W119LCJfcHJldmlvdXMiOnsidXJsIjoiaHR0cDpcL1wvMTI3LjAuMC4xOjgwMDBcL21haW50ZW5hbmNlIiwicm91dGUiOiJtYWludGVuYW5jZS5pbmRleCJ9LCJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI6MX0=',1774681396);
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -395,7 +391,9 @@ CREATE TABLE `spareparts` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `spareparts_part_code_unique` (`part_code`)
+  UNIQUE KEY `spareparts_part_code_unique` (`part_code`),
+  KEY `spareparts_part_code_index` (`part_code`),
+  KEY `spareparts_part_category_index` (`part_category`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -407,14 +405,14 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `spareparts` WRITE;
 /*!40000 ALTER TABLE `spareparts` DISABLE KEYS */;
 INSERT INTO `spareparts` VALUES
-(1,'SPR-00001','ram','RAM DDR4 8GB','Kingston','8GB DDR4 3200MHz',10,5,350000.00,'Bhinneka','Rak A-1','2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(2,'SPR-00002','ssd','SSD SATA 256GB','WD','256GB SATA 2.5\"',6,3,450000.00,'TokoPC','Rak A-2','2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(3,'SPR-00003','hdd','HDD 1TB','Seagate','1TB 7200RPM SATA',2,3,650000.00,'Bhinneka','Rak A-3','2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(4,'SPR-00004','keyboard','Keyboard USB','Logitech','Wired USB Full Size',8,5,120000.00,'iBox','Rak B-1','2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(5,'SPR-00005','mouse','Mouse USB Optical','Logitech','Wired USB Optical',3,5,85000.00,'iBox','Rak B-2','2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(6,'SPR-00006','psu','PSU 500W','Corsair','500W 80+ Bronze',3,2,750000.00,'Bhinneka','Rak C-1','2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(7,'SPR-00007','cable','Kabel LAN Cat6','Belden','UTP Cat6 1 meter',20,10,15000.00,'Tokopedia','Rak D-1','2026-03-27 23:38:22','2026-03-27 23:38:22'),
-(8,'SPR-00008','ram','RAM DDR4 16GB','Corsair','16GB DDR4 3600MHz',1,2,700000.00,'Bhinneka','Rak A-1','2026-03-27 23:38:22','2026-03-27 23:38:22');
+(1,'SPR-00002','ssd','SSD SATA 256GB','WD','256GB SATA 2.5\"',6,3,720000.00,'PC Store','Shelf A-2','2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(2,'SPR-00003','hdd','HDD 1TB','Seagate','1TB 7200RPM SATA',2,3,880000.00,'TechSupplies Co.','Shelf A-3','2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(3,'SPR-00004','keyboard','USB Keyboard','Logitech','Wired USB Full Size',8,5,250000.00,'iBox','Shelf B-1','2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(4,'SPR-00005','mouse','USB Optical Mouse','Logitech','Wired USB Optical',3,5,180000.00,'iBox','Shelf B-2','2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(5,'SPR-00006','psu','PSU 500W','Corsair','500W 80+ Bronze',3,2,1200000.00,'TechSupplies Co.','Shelf C-1','2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(6,'SPR-00007','cable','Cat6 LAN Cable 1m','Belden','UTP Cat6 1 meter',20,10,35000.00,'Network Mart','Shelf D-1','2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(7,'SPR-00008','ram','RAM DDR4 16GB','Corsair','16GB DDR4 3600MHz',1,2,1100000.00,'TechSupplies Co.','Shelf A-1','2026-03-28 06:48:15','2026-03-28 06:48:15'),
+(8,'SPR-001','ram','RAM DDR4 8GB','Kingston','8GB DDR4 3200MHz',4,5,0.00,NULL,NULL,'2026-03-28 06:50:22','2026-03-28 06:52:19');
 /*!40000 ALTER TABLE `spareparts` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -442,11 +440,12 @@ CREATE TABLE `transactions` (
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transactions_transaction_code_unique` (`transaction_code`),
-  KEY `transactions_part_id_foreign` (`part_id`),
-  KEY `transactions_device_id_foreign` (`device_id`),
+  KEY `transactions_part_id_index` (`part_id`),
+  KEY `transactions_device_id_index` (`device_id`),
+  KEY `transactions_transaction_date_index` (`transaction_date`),
   CONSTRAINT `transactions_device_id_foreign` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE SET NULL,
   CONSTRAINT `transactions_part_id_foreign` FOREIGN KEY (`part_id`) REFERENCES `spareparts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -457,11 +456,12 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
 INSERT INTO `transactions` VALUES
-(1,'TRX-20260301-0001',1,NULL,'in',15,NULL,'Bhinneka','Eko','2026-03-01',NULL,'2026-03-27 23:38:22'),
-(2,'TRX-20260310-0001',1,1,'out',2,'Upgrade RAM PC','Budi Santoso','Eko','2026-03-10',NULL,'2026-03-27 23:38:22'),
-(3,'TRX-20260310-0002',2,4,'out',1,'Ganti SSD','Ahmad Fauzi','Eko','2026-03-10',NULL,'2026-03-27 23:38:22'),
-(4,'TRX-20260315-0001',4,NULL,'in',10,NULL,'iBox','Eko','2026-03-15',NULL,'2026-03-27 23:38:22'),
-(5,'TRX-20260320-0001',5,2,'out',1,'Ganti mouse rusak','Siti Rahayu','Eko','2026-03-20',NULL,'2026-03-27 23:38:22');
+(1,'TRX-20260310-0002',7,2,'out',1,'SSD replacement','Sarah Connor','Eric G.','2026-03-10',NULL,'2026-03-28 06:48:15'),
+(2,'TRX-20260315-0001',2,NULL,'in',10,NULL,'iBox','Eric G.','2026-03-15',NULL,'2026-03-28 06:48:15'),
+(3,'TRX-20260320-0001',5,4,'out',1,'Replace broken mouse','CEO','Eric G.','2026-03-20',NULL,'2026-03-28 06:48:15'),
+(4,'TRX-20260328-0001',8,6,'out',1,'Upgrade RAM pada PC IT-001','Ahmad Rizki',NULL,'2026-03-28',NULL,'2026-03-28 06:50:51'),
+(5,'TRX-20260328-0002',8,NULL,'in',10,NULL,NULL,NULL,'2026-03-28',NULL,'2026-03-28 06:51:46'),
+(6,'TRX-20260328-0003',8,NULL,'out',15,'Tes','Ahmad Rizki',NULL,'2026-03-28',NULL,'2026-03-28 06:52:19');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -478,6 +478,7 @@ CREATE TABLE `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `role` enum('admin','technician','viewer') NOT NULL DEFAULT 'viewer' COMMENT 'User role: admin (full access), technician (maintenance & sparepart), viewer (read-only)',
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
@@ -485,7 +486,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -495,14 +496,14 @@ CREATE TABLE `users` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES
+(1,'Admin User','admin@test.local','admin',NULL,'$2y$12$ifK/.weuBfy6VtNktCiA9eu13zjvHBox8g5zgyJtyWganLFpy.UFC',NULL,'2026-03-27 23:48:14','2026-03-27 23:48:14'),
+(2,'Technician User','technician@test.local','technician',NULL,'$2y$12$wEz0hc8UAmyZOMuMiP0qjOAIA7LJik0aV1KyHV2foILzXks9gVcbK',NULL,'2026-03-27 23:48:15','2026-03-27 23:48:15'),
+(3,'Viewer User','viewer@test.local','viewer',NULL,'$2y$12$DmmMbnUW0RKo8WKf5etUV.IpcBrvrlsRICw7TvHzwwkmPEeDBkqKG',NULL,'2026-03-27 23:48:15','2026-03-27 23:48:15');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
-
---
--- Dumping routines for database 'sistem_ma'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -513,4 +514,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-03-28  6:58:12
+-- Dump completed on 2026-03-28 14:10:30
